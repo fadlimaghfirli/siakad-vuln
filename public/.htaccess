@@ -1,0 +1,11 @@
+<IfModule mod_rewrite.c>
+    Options -MultiViews -Indexes
+    RewriteEngine On
+    
+    # Jika file atau folder asli ada, tampilkan langsung (seperti CSS/JS)
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    
+    # Jika tidak, arahkan ke index.php dan tangkap URL-nya
+    RewriteRule ^(.*)$ index.php?url=$1 [QSA,L]
+</IfModule>
