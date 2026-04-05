@@ -6,7 +6,7 @@ use Core\Database;
 use PDOException;
 use PDO;
 
-class PengumumanModel
+class ForumModel
 {
     private $db;
 
@@ -17,20 +17,18 @@ class PengumumanModel
 
     public function getAll()
     {
-        // Menampilkan dari yang terbaru
-        $stmt = $this->db->dbh->query("SELECT * FROM pengumuman ORDER BY id DESC");
+        $stmt = $this->db->dbh->query("SELECT * FROM forum ORDER BY id DESC");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function tambah($judul, $isi, $penulis)
+    public function tambah($topik, $isi, $penulis)
     {
         $tanggal = date('Y-m-d');
-
-        $sql = "INSERT INTO pengumuman (judul, isi, tanggal, penulis) VALUES (?, ?, ?, ?)";
-
+        // Menggunakan prepared statement agar XSS tidak tumpang tindih dengan SQLi
+        $sql = "INSERT INTO forum (topik, isi, tanggal, penulis) VALUES (?, ?, ?, ?)";
         try {
             $stmt = $this->db->dbh->prepare($sql);
-            $stmt->execute([$judul, $isi, $tanggal, $penulis]);
+            $stmt->execute([$topik, $isi, $tanggal, $penulis]);
             return true;
         } catch (PDOException $e) {
             die("Database Error: " . $e->getMessage());
