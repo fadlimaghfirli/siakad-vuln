@@ -9,16 +9,15 @@ class LoginController extends Controller
 {
     public function index()
     {
-        session_start();
         if (isset($_SESSION['username'])) {
             header("Location: /dashboard");
             exit;
         }
 
         $data = ['title' => 'Login Portal - SIAKAD Vuln'];
-        $this->view('layouts/header', $data);
+
+        // HANYA memanggil view login (tanpa header & footer)
         $this->view('auth/login', $data);
-        $this->view('layouts/footer');
     }
 
     public function process()
@@ -30,13 +29,29 @@ class LoginController extends Controller
         $user = $userModel->login($username, $password);
 
         if ($user) {
-            // Login Berhasil, set Session
-            session_start();
+            // session_start() juga dihapus dari sini
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['username'] = $user['username'];
             $_SESSION['role'] = $user['role'];
 
-            header("Location: /dashboard");
+            // Tampilkan SweetAlert
+            $this->view('layouts/header', ['title' => 'Login Berhasil']);
+            echo '<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>';
+            echo "<script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil Login!',
+                        text: 'Selamat datang, " . htmlspecialchars($user['username']) . "',
+                        timer: 2000,
+                        timerProgressBar: true,
+                        showConfirmButton: false
+                    }).then(() => {
+                        window.location.href = '/dashboard';
+                    });
+                });
+            </script>";
+            $this->view('layouts/footer');
             exit;
         } else {
             // Login Gagal
@@ -44,16 +59,17 @@ class LoginController extends Controller
                 'title' => 'Login Portal - SIAKAD Vuln',
                 'error' => 'Username atau Password salah!'
             ];
-            $this->view('layouts/header', $data);
+
             $this->view('auth/login', $data);
-            $this->view('layouts/footer');
         }
     }
 
     public function logout()
     {
-        session_start();
+        // Hapus semua data session dan hancurkan session
+        session_unset();
         session_destroy();
-        header("Location: /login");
+        header("Location: /home");
+        exit;
     }
 }

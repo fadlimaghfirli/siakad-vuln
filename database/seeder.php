@@ -21,30 +21,40 @@ try {
     $pdo->query("TRUNCATE TABLE users");
     $pdo->query("TRUNCATE TABLE mahasiswa");
     $pdo->query("TRUNCATE TABLE mata_kuliah");
-    $pdo->query("TRUNCATE TABLE pengumuman");
+    $pdo->query("TRUNCATE TABLE forum");
 
-    // 2. Buat Akun Admin
-    $passwordAdmin = md5('admin123'); // Sengaja pakai MD5 agar terlihat 'legacy' dan rentan dicrack
-    $pdo->query("INSERT INTO users (username, password, role) VALUES ('admin', '$passwordAdmin', 'admin')");
+    // 2. Buat Akun Admin (Target Eksploitasi SQLi)
+    // Akun kampus diset 'admin' agar payload login "admin' -- -" tetap berfungsi
+    $passwordAdmin = 'password_sangat_rahasia_123';
+    $pdo->query("INSERT INTO users (akun_kampus, username, password, role) VALUES ('admin', 'Administrator Kampus', '$passwordAdmin', 'admin')");
     echo "[-] Akun Admin berhasil dibuat.\n";
 
-    // 3. Generate 100 Data Mahasiswa
-    echo "[-] Membuat 100 data mahasiswa...\n";
+    // 3. Generate 100 Data Mahasiswa & Akun Loginnya
+    echo "[-] Membuat 100 data mahasiswa & akun login...\n";
     $stmtMhs = $pdo->prepare("INSERT INTO mahasiswa (nim, nama, jurusan, angkatan, email, alamat) VALUES (?, ?, ?, ?, ?, ?)");
+    $stmtUser = $pdo->prepare("INSERT INTO users (akun_kampus, username, password, role) VALUES (?, ?, ?, ?)");
 
     $jurusan_list = ['Teknik Informatika', 'Sistem Informasi', 'Teknik Komputer', 'Manajemen Informatika', 'Sains Data'];
 
     for ($i = 0; $i < 100; $i++) {
-        $tahun = $faker->numberBetween(2020, 2023);
-        $nim = $tahun . '10' . str_pad($i + 1, 3, '0', STR_PAD_LEFT);
+        // Generate NIM 16 digit angka acak
+        $nim = $faker->numerify('################');
 
         $nama = $faker->name;
         $jurusan = $faker->randomElement($jurusan_list);
-        $angkatan = $tahun;
-        $email = strtolower(str_replace(' ', '.', $nama)) . '@kampus.ac.id';
+        $angkatan = $faker->numberBetween(2020, 2023);
+
+        // Email pribadi/alternatif untuk tabel mahasiswa
+        $email_pribadi = strtolower(preg_replace('/[^a-zA-Z0-9]/', '', $nama)) . '@student.trunojoyo.ac.id';
         $alamat = $faker->address;
 
-        $stmtMhs->execute([$nim, $nama, $jurusan, $angkatan, $email, $alamat]);
+        // Eksekusi insert ke tabel mahasiswa
+        $stmtMhs->execute([$nim, $nama, $jurusan, $angkatan, $email_pribadi, $alamat]);
+
+        // Eksekusi insert ke tabel users (Format: NIM@student.trunojoyo.ac.id)
+        $akun_kampus = $nim . '@student.trunojoyo.ac.id';
+        $password_mhs = 'mahasiswa123'; // Password default untuk testing
+        $stmtUser->execute([$akun_kampus, $nama, $password_mhs, 'mahasiswa']);
     }
 
     // 4. Generate 20 Mata Kuliah
@@ -58,19 +68,45 @@ try {
         $stmtMk->execute([$kode, $nama_mk, $sks, $semester]);
     }
 
-    // 5. Generate 5 Pengumuman Normal
-    echo "[-] Membuat data pengumuman...\n";
-    $stmtPengumuman = $pdo->prepare("INSERT INTO pengumuman (judul, isi, tanggal, penulis) VALUES (?, ?, ?, ?)");
+    // 5. Generate 5 Forum Diskusi
+    echo "[-] Membuat data forum diskusi...\n";
+    $stmtForum = $pdo->prepare("INSERT INTO forum (topik, isi, tanggal, penulis) VALUES (?, ?, ?, ?)");
+
+    $topik_indo = [
+        "Jadwal Praktikum Keamanan Jaringan",
+        "Tanya seputar pengisian KRS Semester Ganjil",
+        "Info Pendaftaran Beasiswa Kampus Merdeka",
+        "Kehilangan Flasdisk di Lab Komputer",
+        "Kelompok Tugas Akhir Rekayasa Perangkat Lunak"
+    ];
+
+    $isi_indo = [
+        "<p>Permisi teman-teman, ada yang tau jadwal pengganti untuk kelas Pak Budi? Kemarin katanya diundur tapi saya belum dapat infonya di grup WhatsApp.</p>",
+        "<p>Min, kok web SIAKAD loadingnya lama banget ya pas mau klik simpan KRS? Udah dicoba dari tadi malam gagal terus. Ada solusi?</p>",
+        "<p>Bagi mahasiswa semester 5 yang berminat ikut program kampus merdeka, harap segera mengumpulkan berkas ke ruang TU paling lambat hari jumat.</p>",
+        "<p>Tolong infonya kalau ada yang menemukan flashdisk Sandisk warna merah di Lab Komputer 2. Isinya file skripsi saya semua, belum di-backup :(</p>",
+        "<p>Halo, saya butuh 1 orang lagi nih untuk kelompok tugas akhir mata kuliah RPL. Syaratnya bisa ngoding PHP/Laravel. Yang minat langsung reply ya!</p>"
+    ];
+
     for ($i = 0; $i < 5; $i++) {
-        $judul = "Informasi Akademik: " . ucwords($faker->words(4, true));
-        $isi = "<p>" . $faker->paragraph(3) . "</p>"; // Format HTML biasa
-        $tanggal = $faker->date('Y-m-d');
-        $penulis = "Admin Akademik";
-        $stmtPengumuman->execute([$judul, $isi, $tanggal, $penulis]);
+        $topik = $topik_indo[$i];
+        $isi = $isi_indo[$i];
+        // Tanggal diacak antara 1 bulan terakhir
+        $tanggal = $faker->dateTimeBetween('-1 month', 'now')->format('Y-m-d');
+        // Penulis diambil secara acak
+        $penulis = $faker->name;
+
+        $stmtForum->execute([$topik, $isi, $tanggal, $penulis]);
     }
 
     echo "\n=== SEEDING SELESAI! ===\n";
     echo "Database siakad_vuln_db siap digunakan untuk simulasi.\n";
+    echo "------------------------------------------------------\n";
+    echo "Info Login:\n";
+    echo "Admin (SQLi Target) : admin' -- -\n";
+    echo "Mahasiswa           : [nim_16_digit]@student.trunojoyo.ac.id\n";
+    echo "Password Mahasiswa  : mahasiswa123\n";
+    echo "------------------------------------------------------\n";
 } catch (PDOException $e) {
     echo "Error saat seeding: " . $e->getMessage();
 }

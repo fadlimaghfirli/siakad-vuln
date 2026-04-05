@@ -21,7 +21,8 @@ class MahasiswaModel
         if ($keyword != '') {
             $sql = "SELECT * FROM mahasiswa WHERE nama LIKE '%" . $keyword . "%' OR nim LIKE '%" . $keyword . "%'";
         } else {
-            $sql = "SELECT * FROM mahasiswa";
+            // Jika tidak mencari, tampilkan 10 saja agar rapi
+            $sql = "SELECT * FROM mahasiswa LIMIT 10";
         }
 
         try {

@@ -15,21 +15,17 @@ class UserModel
         $this->db = new Database();
     }
 
-    public function login($username, $password)
+    public function login($akun_kampus, $password)
     {
-        // Simulasi penggunaan MD5 (hashing lama yang rentan di-crack)
-        $hashed_password = md5($password);
-
-        // 🚨 VULNERABILITY: Menggabungkan input username langsung ke dalam string query.
-        // Jika username diisi: admin' -- -
-        // Maka query menjadi: SELECT * FROM users WHERE username = 'admin' -- -' AND password = '...'
-        // Tanda -- - akan mengomentari (mengabaikan) pengecekan password di belakangnya!
-
-        $sql = "SELECT * FROM users WHERE username = '$username' AND password = '$hashed_password'";
+        // 🚨 VULNERABILITY (SQLi): Celah tetap dipertahankan namun target kolomnya berubah
+        $sql = "SELECT * FROM users WHERE akun_kampus = '$akun_kampus' AND password = '$password'";
 
         try {
             $stmt = $this->db->dbh->query($sql);
-            return $stmt->fetch(PDO::FETCH_ASSOC);
+            if ($stmt) {
+                return $stmt->fetch(PDO::FETCH_ASSOC);
+            }
+            return false;
         } catch (PDOException $e) {
             die("Database Error: " . $e->getMessage());
         }
