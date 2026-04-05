@@ -56,7 +56,7 @@ $mobInactive  = $mobBase . "text-slate-500 hover:bg-brand-50 hover:text-brand-60
 
     <div class="sticky top-6 z-40 px-4 sm:px-6 w-full max-w-7xl mx-auto transition-all duration-300">
 
-        <nav class="bg-white/70 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-full px-4 py-2.5 flex items-center justify-between">
+        <nav class="bg-white/50 backdrop-blur-lg border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-full px-4 py-2.5 flex items-center justify-between">
 
             <a href="/home" class="flex items-center gap-3 pl-2 group">
                 <!-- <div class="w-9 h-9 bg-gradient-to-br from-brand-500 to-brand-700 text-white rounded-full flex items-center justify-center font-bold text-sm shadow-md shadow-brand-500/30 group-hover:scale-105 transition-transform">S</div> -->

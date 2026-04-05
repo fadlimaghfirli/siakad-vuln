@@ -9,7 +9,7 @@
                 <form action="/forum/simpan" method="POST" class="space-y-4">
                     <div>
                         <label class="block text-sm font-semibold text-slate-700 mb-1.5">Topik Diskusi</label>
-                        <input type="text" name="topik" class="w-full border border-slate-200 rounded-xl px-4 py-3 focus:outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 transition-all bg-slate-50 focus:bg-white text-slate-800 font-medium" required autocomplete="off">
+                        <input type="text" name="topik" class="w-full border border-slate-200 rounded-xl px-4 py-3 focus:outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 transition-all bg-slate-50 focus:bg-white text-slate-800 font-medium" required>
                     </div>
                     <div>
                         <label class="block text-sm font-semibold text-slate-700 mb-1.5">Isi Pesan</label>

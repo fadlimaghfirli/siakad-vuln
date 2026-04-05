@@ -22,7 +22,7 @@
     </div>
 </footer>
 
-<div class="fixed md:bottom-12 md:left-12  bottom-6 left-6 z-50 flex flex-col items-start drop-shadow-2xl">
+<div class="fixed md:bottom-12 md:left-12 bottom-6 left-6 z-50 flex flex-col items-start drop-shadow-2xl">
 
     <div id="vuln-warning-balloon" class="hidden mb-4 bg-white border border-red-200 shadow-xs rounded-2xl p-4 max-w-[250px] relative">
         <!-- <div id="vuln-warning-balloon" class="hidden mb-4 bg-white border border-red-200 shadow-xs rounded-2xl p-4 max-w-[250px] relative animate-bounce" style="animation: bounce 2s infinite; animation-timing-function: cubic-bezier(0.280, 0.840, 0.420, 1);"> -->

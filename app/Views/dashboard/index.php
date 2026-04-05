@@ -197,11 +197,11 @@
                     <div class="flex flex-col sm:flex-row sm:items-center gap-4 p-4 rounded-2xl bg-slate-50 border border-slate-100 hover:border-brand-300 transition-colors">
                         <div class="bg-white border border-slate-200 text-center px-4 py-2 rounded-xl min-w-[5rem] shadow-sm">
                             <p class="text-xs text-slate-500 font-bold uppercase">Senin</p>
-                            <p class="text-lg font-extrabold text-brand-600">08:00</p>
+                            <p class="text-lg font-extrabold text-brand-600">07:00</p>
                         </div>
                         <div class="flex-grow">
-                            <h4 class="font-bold text-slate-800 text-lg">Keamanan Sistem Lanjut</h4>
-                            <p class="text-sm text-slate-500 font-medium">Ruang Lab Siber 3.2 • Dosen: Dr. Budi Setiawan</p>
+                            <h4 class="font-bold text-slate-800 text-lg">Sistem Keamanan Jaringan</h4>
+                            <p class="text-sm text-slate-500 font-medium">RKB-D 207 • Dosen: Muhlis Tahir, S.Pd., M.Tr. Kom.</p>
                         </div>
                     </div>
                 </div>

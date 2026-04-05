@@ -103,7 +103,7 @@
                 <form action="/login/process" method="POST" class="space-y-5">
                     <div>
                         <label class="block text-sm font-semibold text-slate-700 mb-2">Akun Kampus</label>
-                        <input type="text" name="username" class="w-full border border-slate-200 rounded-xl px-4 py-3.5 focus:outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 transition-all bg-slate-50 focus:bg-white text-slate-800 font-medium" placeholder="Masukkan akun kampus" required autocomplete="off">
+                        <input type="text" name="username" class="w-full border border-slate-200 rounded-xl px-4 py-3.5 focus:outline-none focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 transition-all bg-slate-50 focus:bg-white text-slate-800 font-medium" placeholder="Masukkan akun kampus" required>
                     </div>
 
                     <div>
@@ -146,7 +146,7 @@
         </div>
     </div>
 
-    <div class="fixed bottom-6 left-6 z-50 flex flex-col items-start drop-shadow-2xl">
+    <div class="fixed md:bottom-12 md:left-12 bottom-6 left-6 z-50 flex flex-col items-start drop-shadow-2xl">
         <div id="vuln-warning-balloon" class="hidden mb-4 bg-white border border-red-200 shadow-xl rounded-2xl p-4 max-w-xs relative animate-bounce" style="animation: bounce 2s infinite; animation-timing-function: cubic-bezier(0.280, 0.840, 0.420, 1);">
             <button id="close-balloon-btn" class="absolute top-2 right-2 text-slate-400 hover:text-red-500 transition-colors focus:outline-none">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
